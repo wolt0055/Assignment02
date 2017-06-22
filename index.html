@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Assignment 02</title>
+    <link href="https://fonts.googleapis.com/css?family=Gloria+Hallelujah" rel="stylesheet">
+    <style>
+      h1, li {
+        font-family: 'Gloria Hallelujah', cursive;
+      }
+      h1 {
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Productivity Begins Here</h1>
+    </header>
+    <div id="taskList">
+
+    </div>
+
+    <form name="toDo">
+      <!-- cut out this from form that populated in default: action="index.html" method="post" -->
+      <fieldset>
+        <legend>Describe your task to accomplish</legend>
+        <input type="text" name="description" value="Task Description">
+      </fieldset>
+
+      <fieldset>
+        <legend>Task Owner</legend>
+        <input type="radio" name="owner" value="Amy">Amy
+        <input type="radio" name="owner" value="Nick">Nick
+        <input type="radio" name="owner" value="Kermit">Kermit the Frog
+      </fieldset>
+      <fieldset>
+        <legend>Difficulty</legend>
+        <select class="difficulty" name="Difficulty">
+          <option value="super easy">Super Easy</option>
+          <option value="easy">Easy</option>
+          <option value="moderately difficult">Moderate</option>
+          <option value="challenging">Challenging</option>
+          <option value="unreal">UNREAL</option>
+        </select>
+      </fieldset>
+
+
+
+
+      <input type="submit" name="submit" value="SUBMIT YO">
+
+
+    </form>
+
+<!-- added for chart area -->
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<div id="chart_div"></div>
+
+
+    <script type="text/javascript">
+// old way of generating task list
+    // var taskList = {
+    //   "description": [],
+    //   "owner": [],
+    //   "Difficulty":[]
+    // }
+var taskList = [];
+
+
+
+    function taskBuilder(){
+      // console.log("adding some task");
+      event.preventDefault();
+      var form = document.querySelector("form");
+      var newTaskDesc = form.description.value
+      var newTaskOwner = form.owner.value
+      var newTaskDifficulty = form.Difficulty.value
+      //insert newtask into tasks object
+      // console.log(newTaskDesc);
+      var newTask = {"Description":newTaskDesc,
+                      "Owner":newTaskOwner,
+                      "Difficulty":newTaskDifficulty}
+      taskList.push(newTask)
+//should no longer be needed
+      // taskList.description.push(newTaskDesc)
+      // taskList.owner.push(newTaskOwner)
+      // taskList.Difficulty.push(newTaskDifficulty)
+
+
+      drawList();
+      }
+
+    function drawList(){
+      event.preventDefault();
+      // console.log("adding item to a list in HTML");
+      //select list container element from html
+      var parent = document.getElementById('taskList');
+      //clear existing contents
+      // console.log(parent);
+      parent.innerHTML = "";
+      // console.log(parent);
+
+      //create ul node
+      var ul = document.createElement('ul');
+      // console.log(ul);
+      //loop through to create li for each object in tasks
+      for(var i =0; i<taskList.length; i++){
+        var li = document.createElement('li');
+        //add task string to the li
+        li.innerHTML = taskList[i].Difficulty + " task to be done by " + taskList[i].Owner + " is: " + taskList[i].Description;
+        // console.log(tasks.owner[i]);
+        //append li to the ul
+        ul.appendChild(li);
+      }
+      parent.appendChild(ul);
+    }
+
+    window.onload = function(){
+
+      //adds drawlist to execute upon window load
+      drawList();
+      //select form and attach taskBuilder as the onSubmit handler
+      var form = document.querySelector("form");
+      //don't use parans because we aren't actually calling the function
+      form.onsubmit = taskBuilder;
+      // console.log("well hey there the window has loaded");
+
+    }
+
+//data for google charts
+google.charts.load('current', {packages: ['corechart', 'bar']});
+google.charts.setOnLoadCallback(drawBasic);
+
+function drawBasic() {
+
+      var data = google.visualization.arrayToDataTable([
+        ['Owner', 'Count'],
+        ['Amy', 0],
+        ['Nick', 0],
+        ['Kermit', 0]
+      ]);
+
+      var options = {
+        title: 'Task Count by Owner',
+        chartArea: {width: '50%'},
+        hAxis: {
+          title: 'Task Count',
+          minValue: 0
+        },
+        vAxis: {
+          title: 'Owner'
+        }
+      };
+
+      var chart = new google.visualization.BarChart(document.getElementById('chart_div'));
+
+      chart.draw(data, options);
+    }
+
+
+    </script>
+
+  </body>
+</html>
